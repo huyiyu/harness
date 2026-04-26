@@ -1,4 +1,4 @@
-baseURL = 'https://huyiyu.github.io/'
+baseURL = 'https://huyiyu.github.io/harness/'
 languageCode = 'zh-cn'
 defaultContentLanguage = 'zh-cn'
 title = 'Harness 工程落地方案'
