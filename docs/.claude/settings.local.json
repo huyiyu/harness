@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Read(//home/huyiyu/**)",
+      "Bash(command -v nvm)",
+      "Bash(curl --version)",
+      "Bash(curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh)",
+      "Bash(bash)",
+      "Bash(command -v openspec)",
+      "Bash(openspec --version)",
+      "Skill(update-config)",
+      "Bash(openspec schemas *)",
+      "Bash(openspec new *)",
+      "Bash(openspec status *)",
+      "Bash(openspec instructions *)",
+      "Bash(openspec show *)",
+      "Bash(openspec spec *)",
+      "Bash(openspec config *)",
+      "Bash(openspec list *)",
+      "Bash(openspec validate *)",
+      "Bash(openspec view *)",
+      "Bash(openspec archive *)"
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+baseURL = 'https://harnness.github.io/'
+languageCode = 'zh-cn'
+defaultContentLanguage = 'zh-cn'
+title = 'Harness 工程落地方案'
+theme = 'hugo-book'
+enableGitInfo = true
+
+[params]
+  BookSearch = true
+  BookToC = true
+  BookSection = 'docs'
+  BookRepo = ''
+
+[markup.goldmark.renderer]
+  unsafe = true
