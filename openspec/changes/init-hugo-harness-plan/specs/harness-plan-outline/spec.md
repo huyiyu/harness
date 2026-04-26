@@ -2,21 +2,21 @@
 
 ### Requirement: 章节目录采用两位数前缀命名
 
-系统 SHALL 将"Harness 工程落地方案"的所有章节目录放置于 `docs/content/` 下,目录名遵循 `<两位数字>-<英文 kebab-case 短名>` 的格式,目录顺序即章节顺序。数字前缀 SHALL 使用前导零(如 `01`、`02`、`09`)。
+系统 SHALL 将"Harness 工程落地方案"的所有章节目录放置于 `docs/content/docs/` 下(Hugo Book 主题约定,`BookSection = 'docs'`),目录名遵循 `<两位数字>-<英文 kebab-case 短名>` 的格式,目录顺序即章节顺序。数字前缀 SHALL 使用前导零(如 `01`、`02`、`09`)。
 
 #### Scenario: 章节目录可按字典序得到正确章节顺序
 
-- **WHEN** 在 `docs/content/` 下执行 `ls -1`
+- **WHEN** 在 `docs/content/docs/` 下执行 `ls -1`
 - **THEN** 输出按字典序排列时,等于实际章节顺序(`01-background` 在 `02-harness-core` 之前,以此类推)
 
 #### Scenario: 目录命名不使用中文或大写
 
-- **WHEN** 检查 `docs/content/` 下任一一级子目录名
+- **WHEN** 检查 `docs/content/docs/` 下任一一级子目录名
 - **THEN** 该目录名只包含小写英文字母、数字、连字符 `-`,不出现中文字符、空格、下划线或驼峰命名
 
 ### Requirement: 14 个固定章节 + 附录占位齐备
 
-系统 SHALL 在 `docs/content/` 下一次性创建以下 14 个章节目录 + `99-appendix` 目录,每个目录包含一个占位 `_index.md`,正文部分仅保留一行 TODO 注释或空行。章节清单与编号 SHALL 完全一致,且采用"上篇理论指导思想(01-07)+ 下篇落地实践路径(08-14)+ 附录(99)"的双篇结构:
+系统 SHALL 在 `docs/content/docs/` 下一次性创建以下 14 个章节目录 + `99-appendix` 目录,每个目录包含一个占位 `_index.md`,正文部分仅保留一行 TODO 注释或空行。章节清单与编号 SHALL 完全一致,且采用"上篇理论指导思想(01-07)+ 下篇落地实践路径(08-14)+ 附录(99)"的双篇结构:
 
 **上篇·理论指导思想:**
 1. `01-background` — 背景与 Harness 定义
@@ -41,7 +41,7 @@
 
 #### Scenario: 14 章 + 附录目录全部存在
 
-- **WHEN** 检查 `docs/content/` 下的一级子目录
+- **WHEN** 检查 `docs/content/docs/` 下的一级子目录
 - **THEN** 上述 15 个目录全部存在,数量为 15,目录名与编号一一对应,不多不少
 
 #### Scenario: 每个章节目录包含 _index.md 占位

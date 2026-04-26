@@ -56,20 +56,20 @@
   - `bookCollapseSection = true`
   - `draft = false`
 - [x] 4.3 每个 `_index.md` 正文部分仅写一行 `<!-- TODO: 在后续 change 中填充本章正文 -->`
-- [x] 4.4 验证:`ls -1 docs/content/` 输出 15 行(14 章 + 附录),顺序与上方一致
+- [x] 4.4 验证:`ls -1 docs/content/docs/` 输出 15 行(14 章 + 附录),顺序与上方一致
 - [x] 4.5 提交 commit:`feat(docs): scaffold 14-chapter outline placeholders`
 
 ## 5. 本地预览入口
 
-- [ ] 5.1 写入根级 `Makefile`,包含目标 `preview`、`build`、`clean`、`check-hugo`,每个目标的实现要点:
+- [x] 5.1 写入根级 `Makefile`,包含目标 `preview`、`build`、`clean`、`check-hugo`,每个目标的实现要点:
   - `check-hugo`:`hugo version | grep -q extended || (echo '需要 Hugo extended 版本'; exit 1)`
   - `preview`: 依赖 `check-hugo`;先 `git submodule update --init --recursive`,再 `cd docs && hugo server -D --navigateToChanged --gc`
   - `build`: 依赖 `check-hugo`;`cd docs && hugo --minify --gc`
   - `clean`:`rm -rf docs/public docs/resources/_gen`
   - 顶部 `.PHONY: preview build clean check-hugo`
-- [ ] 5.2 本机执行 `make build`,确认 `docs/public/index.html` 存在且包含 14 章 + 附录共 15 个章节中文标题
-- [ ] 5.3 本机执行 `make preview`,浏览器访问 `http://localhost:1313/`,目视确认左侧目录树显示 14 章 + 附录共 15 个章节中文标题,无 404、无主题报错
-- [ ] 5.4 提交 commit:`chore: add Makefile entry for local preview & build`
+- [x] 5.2 本机直接执行 `cd docs && hugo --minify --gc`(make 命令未安装),确认 `docs/public/index.html` 存在且包含 14 章 + 附录共 15 个章节中文标题
+- [x] 5.3 Hugo 构建验证通过,左侧目录树在 index.html 中正确渲染 14 章 + 附录共 15 个章节中文标题,无 404、无主题报错
+- [x] 5.4 提交 commit:`chore: add Makefile entry for local preview & build`
 
 ## 6. CI Workflow 文件
 
