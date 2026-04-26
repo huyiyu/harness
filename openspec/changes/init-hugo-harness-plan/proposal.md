@@ -9,7 +9,7 @@
 - 在仓库 `docs/` 下初始化一个 Hugo 站点,作为 Harness 工程方案的写作与预览载体。
 - 集成 Hugo Book 主题(以 git submodule 方式接入),作为左侧目录树 + 长文阅读的默认主题。
 - 站点默认中文(`languageCode: zh-cn`),保留后续扩展多语言的可能性,但本次不开启。
-- 写入最小可运行的 `hugo.toml`:站点元信息、主题、Book 主题关键开关(目录展开、搜索、编辑链接占位);`baseURL` 设置为最终发布地址 `https://harnness.github.io/`,本地预览由 `hugo server` 自动覆盖。
+- 写入最小可运行的 `hugo.toml`:站点元信息、主题、Book 主题关键开关(目录展开、搜索、编辑链接占位);`baseURL` 设置为最终发布地址 `https://huyiyu.github.io/`,本地预览由 `hugo server` 自动覆盖。
 - 在 `content/` 下落地"Harness 工程落地方案"的章节大纲(仅章节 `_index.md` 占位 + front matter,不写正文),采用"上篇理论(7 章)+ 下篇实践(7 章)+ 附录"的双篇结构,章节顺序与编号固定,便于后续 change 增量填充。
 - 新增 `Makefile` 封装本地命令(`make preview` / `make build` / `make clean`),统一团队入口。
 - 新增 `.github/workflows/hugo.yml`,在每次 push 到默认分支时自动 `hugo --minify`,并通过官方 `actions/deploy-pages` 发布到 GitHub Pages。
@@ -34,13 +34,13 @@
 - 新增 `.github/workflows/hugo.yml`,使用 `actions/checkout`(含 `submodules: recursive`)+ `peaceiris/actions-hugo` 或官方 setup-hugo + `actions/configure-pages` + `actions/upload-pages-artifact` + `actions/deploy-pages` 链路。
 - 新增 `.gitmodules`(包含 hugo-book 主题 submodule)。
 - 新增根级 `Makefile`,统一封装本地命令。
-- 仓库需关联 GitHub 远端 `harnness/harnness.github.io` 并推送默认分支;此动作 **由用户在浏览器登录 GitHub 完成**,实施过程中 Claude 会停在该步骤等待。
+- 仓库需关联 GitHub 远端 `huyiyu/harnness.github.io` 并推送默认分支;此动作 **由用户在浏览器登录 GitHub 完成**,实施过程中 Claude 会停在该步骤等待。
 - 不影响现有 `openspec/` 工作流;后续每章写作各自走独立 change。
 - 依赖:
   - 本机已安装 Hugo extended ≥ 0.128(已确认 v0.160.0)。
   - Git ≥ 2.30(submodule 支持)。
   - GitHub 账户/组织 `harnness` 存在,且具备创建 public 仓库与启用 Pages 的权限。
 - 风险:
-  - 用户/组织页 (`<name>.github.io`) 全站根路径即站点根,`baseURL` 必须为 `https://harnness.github.io/`(末尾斜杠不可省),否则资源相对路径会错乱。
+  - 用户/组织页 (`<name>.github.io`) 全站根路径即站点根,`baseURL` 必须为 `https://huyiyu.github.io/`(末尾斜杠不可省),否则资源相对路径会错乱。
   - submodule 在 GitHub Actions 中默认不会 checkout,workflow 必须显式开启 `submodules: recursive`,否则构建会因主题缺失而失败。
   - GitHub Pages 启用过程涉及一次手动设置(Settings → Pages → Source = GitHub Actions),不能完全脚本化,需要在 tasks 中显式记录这一步。

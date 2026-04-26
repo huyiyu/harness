@@ -73,36 +73,36 @@
 
 ## 6. CI Workflow 文件
 
-- [ ] 6.1 创建 `.github/workflows/hugo.yml`,框架:
+- [x] 6.1 创建 `.github/workflows/hugo.yml`,框架:
   - `name: Build & Deploy Hugo to GitHub Pages`
   - `on`: 仅 `push.branches: [main]` + `workflow_dispatch`
   - 顶层 `permissions`:`contents: read`、`pages: write`、`id-token: write`(不多不少)
   - 顶层 `concurrency`:`group: pages`、`cancel-in-progress: false`(避免并发 deploy)
   - 两个 job:`build`(runs-on: ubuntu-latest)与 `deploy`(needs: build,environment: github-pages)
-- [ ] 6.2 `build` job 步骤顺序:
+- [x] 6.2 `build` job 步骤顺序:
   - `actions/checkout@v4`,参数 `submodules: recursive`、`fetch-depth: 0`
   - `peaceiris/actions-hugo@v3`(pin tag,本次实施时记录具体 v 号),参数 `hugo-version: '0.160.0'`、`extended: true`
   - `actions/configure-pages@v5`
   - `run: hugo --minify --gc`,`working-directory: docs`
   - `actions/upload-pages-artifact@v3`,`path: docs/public`
-- [ ] 6.3 `deploy` job 步骤:`actions/deploy-pages@v4`,id `deployment`,把 `${{ steps.deployment.outputs.page_url }}` 注入 environment URL
-- [ ] 6.4 yaml lint 通过(本机 `python -c 'import yaml; yaml.safe_load(open(".github/workflows/hugo.yml"))'` 不抛异常)
-- [ ] 6.5 提交 commit:`ci: add GitHub Actions workflow to build & deploy Hugo to Pages`
+- [x] 6.3 `deploy` job 步骤:`actions/deploy-pages@v4`,id `deployment`,把 `${{ steps.deployment.outputs.page_url }}` 注入 environment URL
+- [x] 6.4 yaml lint 通过(本机 `python -c 'import yaml; yaml.safe_load(open(".github/workflows/hugo.yml"))'` 不抛异常)
+- [x] 6.5 提交 commit:`ci: add GitHub Actions workflow to build & deploy Hugo to Pages`
 
 ## 7. 用户介入:GitHub 仓库与 Pages 启用 ⚠ 暂停
 
 > **以下三步需要用户登录 GitHub 完成,Claude 在第 7.1 之前会停下,等待用户确认或代为操作完成,再继续 7.5。**
 
-- [ ] 7.1 [需用户操作] 在浏览器登录 GitHub,在 `harnness` 用户/组织下创建 public 仓库,仓库名严格为 `harnness.github.io`(用户/组织页约定)
+- [ ] 7.1 [需用户操作] 在浏览器登录 GitHub,在 `huyiyu` 用户/组织下创建 public 仓库,仓库名严格为 `harnness.github.io`(用户/组织页约定)
 - [ ] 7.2 [需用户操作] 仓库创建后,在 Settings → Pages 中将 Source 设置为 "GitHub Actions"(不要选择 "Deploy from a branch")
-- [ ] 7.3 [需用户操作或本地操作,需确认远端 URL] 本地 `git remote add origin git@github.com:harnness/harnness.github.io.git`(或对应 https URL)
+- [ ] 7.3 [需用户操作或本地操作,需确认远端 URL] 本地 `git remote add origin git@github.com:huyiyu/harnness.github.io.git`(或对应 https URL)
 - [ ] 7.4 [需用户操作] `git push -u origin main`(若用户偏好 SSH,需先确认 ssh key 已配置;若用 https,需配置 GitHub PAT 或 git credential)
 - [ ] 7.5 等待 GitHub Actions 自动触发首次 workflow,在 Actions 页面观察 build + deploy 两个 job 状态
 
 ## 8. 首次部署验证
 
 - [ ] 8.1 等待 workflow 状态变为 success(预期 ≤ 5 分钟);若失败,根据日志定位问题(常见:submodule 未 checkout、Hugo 版本不一致、Pages source 未设为 Actions)
-- [ ] 8.2 浏览器访问 `https://harnness.github.io/`,验证:
+- [ ] 8.2 浏览器访问 `https://huyiyu.github.io/`,验证:
   - HTTP 200,中文界面
   - 左侧目录树显示 14 章 + 附录共 15 个章节中文标题
   - 任一章节点击进入,显示对应 `_index.md` 的 TODO 占位

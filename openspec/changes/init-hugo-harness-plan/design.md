@@ -1,6 +1,6 @@
 ## Context
 
-仓库根目录 `/home/huyiyu/Documents/harnness` 当前为空白工程,只有 `.claude/`、`docs/`(空)、`openspec/`(空)。本次 change 要把 `docs/` 改造成一个可写、可预览的 Hugo 站点,并通过 GitHub Actions 自动发布到 `https://harnness.github.io/`。环境已确认:Hugo extended `v0.160.0`、Git 可用、Node v22 可用。GitHub 上目标仓库 `harnness/harnness.github.io` 尚未创建,需用户登录后手工创建。本仓库尚未 `git init`,也未关联远端,这些都是本次 change 的实施前置。
+仓库根目录 `/home/huyiyu/Documents/harnness` 当前为空白工程,只有 `.claude/`、`docs/`(空)、`openspec/`(空)。本次 change 要把 `docs/` 改造成一个可写、可预览的 Hugo 站点,并通过 GitHub Actions 自动发布到 `https://huyiyu.github.io/`。环境已确认:Hugo extended `v0.160.0`、Git 可用、Node v22 可用。GitHub 上目标仓库 `huyiyu/harnness.github.io` 尚未创建,需用户登录后手工创建。本仓库尚未 `git init`,也未关联远端,这些都是本次 change 的实施前置。
 
 **写作主题与定位**:本方案的"Harness"采用 Anthropic 文章 [Harness Design for Long-Running Application Development](https://www.anthropic.com/engineering/harness-design-long-running-apps) 中的语义——围绕长时运行 LLM 智能体的编排脚手架(planner / generator / evaluator + sprint 契约 + 上下文管理 + 工具集成),不是 harness.io 这种 CI/CD 平台。但与原论文逐节对应不同,本方案以 Harness 思想作为**指导思想**,用于解决软件研发全生命周期(需求→架构→研发→测试→部署→运维→归档复盘)的自动化流程设计。方案采用"理论指导思想(50%) + 落地实践路径(50%)"的双篇结构,理论篇融合 Harness 核心思想、DevOps 持续交付理论与 SRE 可靠性工程理论;实践篇覆盖全生命周期各阶段的 AI 主导执行与人类验收推进机制。
 
@@ -42,7 +42,7 @@
 
 ### 决策 3:`baseURL` 直接写最终发布地址,本地预览靠 `hugo server` 覆盖
 
-- **选择**:`baseURL = "https://harnness.github.io/"`(末尾斜杠保留)。
+- **选择**:`baseURL = "https://huyiyu.github.io/"`(末尾斜杠保留)。
 - **理由**:
   - 用户/组织页 `<name>.github.io` 部署在域名根路径,无需 path prefix,`baseURL` 与本地预览之间差异最小。
   - `hugo server` 启动时会将 `baseURL` 自动改写为 `http://localhost:1313/`,本地体验不受影响。
@@ -131,7 +131,7 @@
 - **[风险] Hugo extended 与非 extended 版本对 SCSS 处理行为不同**
   → 缓解:`peaceiris/actions-hugo` 的 `extended: true` 显式开启;`Makefile preview` 在本地也校验 `hugo version | grep extended`。
 - **[风险] `harnness.github.io` 仓库名与 GitHub 用户/组织名严格绑定**
-  → 缓解:本次 change 的实施前置是用户在 GitHub 上确认 `harnness` 这个用户/组织存在并拥有它;若不存在,需用户先注册或选用其他名字,Claude 会停在该前置上等待。
+  → 缓解:本次 change 的实施前置是用户在 GitHub 上确认 `huyiyu` 这个用户/组织存在并拥有它;若不存在,需用户先注册或选用其他名字,Claude 会停在该前置上等待。
 - **[风险] Pages 启用过程涉及手动 UI 操作,容易遗忘**
   → 缓解:tasks.md 中独立列出"手工开启 Pages → Source: GitHub Actions"步骤,且首次 push 后 CI 失败时,在 design 中预留 troubleshooting 注释。
 - **[风险] `99-appendix` 这种数字编号风格可能让外部读者误解为"99 章"**
@@ -149,10 +149,10 @@
 
 1. 本地完成 `git init`、初始化 Hugo 站点、提交所有骨架文件(本机操作,Claude 可执行)。
 2. 本地建好 submodule 与 workflow 文件,本地 `make build` 预演 CI 行为通过(本机操作,Claude 可执行)。
-3. **[需用户操作]** 在 GitHub 上创建 `harnness/harnness.github.io` 仓库(或在用户 `harnness` 名下创建同名仓库)。
-4. **[需用户操作或授权]** 将本地仓库 `git remote add origin git@github.com:harnness/harnness.github.io.git` 并 `git push -u origin main`。
+3. **[需用户操作]** 在 GitHub 上创建 `huyiyu/harnness.github.io` 仓库(或在用户 `huyiyu` 名下创建同名仓库)。
+4. **[需用户操作或授权]** 将本地仓库 `git remote add origin git@github.com:huyiyu/harnness.github.io.git` 并 `git push -u origin main`。
 5. **[需用户操作]** 在仓库 Settings → Pages 中将 Source 设置为 "GitHub Actions"。
-6. 触发首次 workflow 跑通,访问 `https://harnness.github.io/` 验收(本机/Claude 可监控,但失败时由用户决定排错方向)。
+6. 触发首次 workflow 跑通,访问 `https://huyiyu.github.io/` 验收(本机/Claude 可监控,但失败时由用户决定排错方向)。
 
 回滚:本次 change 全部回滚等价于删除 `docs/`、`.github/workflows/hugo.yml`、`.gitmodules`、`Makefile`,以及在 GitHub 上停用 Pages 或删除仓库。
 

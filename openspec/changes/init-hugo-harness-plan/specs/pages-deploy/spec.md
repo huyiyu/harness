@@ -41,19 +41,19 @@
 
 ### Requirement: 部署目标与 baseURL 一致
 
-系统 SHALL 使部署后访问 `https://harnness.github.io/` 即得到与本地 `make preview` 视觉一致的中文文档站点(目录树展示 14 章 + 附录共 15 个章节占位)。
+系统 SHALL 使部署后访问 `https://huyiyu.github.io/` 即得到与本地 `make preview` 视觉一致的中文文档站点(目录树展示 14 章 + 附录共 15 个章节占位)。
 
 #### Scenario: 线上根路径返回首页且左侧目录可见
 
 - **WHEN** 首次 workflow 部署成功后
-- **AND** 浏览器访问 `https://harnness.github.io/`
-- **THEN** 页面成功加载(HTTP 200),左侧目录树展示 14 章 + 附录共 15 个章节标题(中文),CSS / 字体 / JS 资源全部从 `https://harnness.github.io/` 域名下加载,无 404、无 mixed-content 警告
+- **AND** 浏览器访问 `https://huyiyu.github.io/`
+- **THEN** 页面成功加载(HTTP 200),左侧目录树展示 14 章 + 附录共 15 个章节标题(中文),CSS / 字体 / JS 资源全部从 `https://huyiyu.github.io/` 域名下加载,无 404、无 mixed-content 警告
 
 ### Requirement: Pages 配置依赖手工前置步骤
 
 系统 SHALL 在 `tasks.md` 中明确列出以下三项必须由用户在 GitHub 网页端完成的手工步骤,不允许通过自动化脚本绕过:
 
-1. 创建 `harnness/harnness.github.io` 仓库(或在用户 `harnness` 名下创建同名仓库)。
+1. 创建 `huyiyu/harnness.github.io` 仓库(或在用户 `huyiyu` 名下创建同名仓库)。
 2. 将本地仓库 `git remote add origin` 到该仓库。
 3. 在 Settings → Pages 中将 Source 设置为 "GitHub Actions"。
 
