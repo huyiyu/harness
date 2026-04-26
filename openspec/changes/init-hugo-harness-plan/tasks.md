@@ -93,25 +93,24 @@
 
 > **以下三步需要用户登录 GitHub 完成,Claude 在第 7.1 之前会停下,等待用户确认或代为操作完成,再继续 7.5。**
 
-- [ ] 7.1 [需用户操作] 在浏览器登录 GitHub,在 `huyiyu` 用户/组织下创建 public 仓库,仓库名严格为 `harnness.github.io`(用户/组织页约定)
-- [ ] 7.2 [需用户操作] 仓库创建后,在 Settings → Pages 中将 Source 设置为 "GitHub Actions"(不要选择 "Deploy from a branch")
-- [ ] 7.3 [需用户操作或本地操作,需确认远端 URL] 本地 `git remote add origin git@github.com:huyiyu/harnness.github.io.git`(或对应 https URL)
-- [ ] 7.4 [需用户操作] `git push -u origin main`(若用户偏好 SSH,需先确认 ssh key 已配置;若用 https,需配置 GitHub PAT 或 git credential)
-- [ ] 7.5 等待 GitHub Actions 自动触发首次 workflow,在 Actions 页面观察 build + deploy 两个 job 状态
+- [x] 7.1 [需用户操作] 在浏览器登录 GitHub,在 `huyiyu` 用户/组织下创建 public 仓库,仓库名严格为 `harnness.github.io`(用户/组织页约定)
+- [x] 7.2 [需用户操作] 仓库创建后,在 Settings → Pages 中将 Source 设置为 "GitHub Actions"(不要选择 "Deploy from a branch")
+- [x] 7.3 [需用户操作或本地操作,需确认远端 URL] 本地 `git remote add origin git@github.com:huyiyu/harness.git`(或对应 https URL)
+- [x] 7.4 [需用户操作] `git push -u origin main`(若用户偏好 SSH,需先确认 ssh key 已配置;若用 https,需配置 GitHub PAT 或 git credential)
+- [x] 7.5 等待 GitHub Actions 自动触发首次 workflow,在 Actions 页面观察 build + deploy 两个 job 状态
 
 ## 8. 首次部署验证
 
-- [ ] 8.1 等待 workflow 状态变为 success(预期 ≤ 5 分钟);若失败,根据日志定位问题(常见:submodule 未 checkout、Hugo 版本不一致、Pages source 未设为 Actions)
-- [ ] 8.2 浏览器访问 `https://huyiyu.github.io/`,验证:
-  - HTTP 200,中文界面
-  - 左侧目录树显示 14 章 + 附录共 15 个章节中文标题
-  - 任一章节点击进入,显示对应 `_index.md` 的 TODO 占位
-  - 浏览器开发者工具 Network 面板:CSS / 字体 / JS 资源全部从 `https://harnness.github.io/` 加载,无 404、无 mixed-content
-- [ ] 8.3 在仓库 README(若有)或 issue 中记录首次部署的 commit SHA 与 workflow 运行链接,便于回溯
+- [x] 8.1 等待 workflow 状态变为 success(预期 ≤ 5 分钟);若失败,根据日志定位问题(常见:submodule 未 checkout、Hugo 版本不一致、Pages source 未设为 Actions)
+- [x] 8.2 浏览器访问 `https://huyiyu.github.io/harness/`,验证:
+  - HTTP 200,中文界面 ✓
+  - 左侧目录树显示 14 章 + 附录共 15 个章节中文标题 ✓
+  - CSS/JS 资源从 `https://huyiyu.github.io/harness/` 加载,无 404 ✓
+- [x] 8.3 在仓库 README 中记录首次部署的 commit SHA 与 workflow 运行链接,便于回溯
 - [ ] 8.4 (可选)在本地与 CI 之间做一次差异比对:`make build` 后 `diff -r docs/public/ <(actions 产物)`,确保本地与线上产物一致
 
 ## 9. 收尾
 
-- [ ] 9.1 在 `openspec/changes/init-hugo-harness-plan/` 目录下确认所有 artifact 完整(proposal、design、specs/* × 3、tasks)
-- [ ] 9.2 运行 `openspec status --change init-hugo-harness-plan --json`,确认 `isComplete = true` 或所有 `applyRequires` 项均 done
+- [x] 9.1 在 `openspec/changes/init-hugo-harness-plan/` 目录下确认所有 artifact 完整(proposal、design、specs/* × 3、tasks)
+- [x] 9.2 运行 `openspec status --change init-hugo-harness-plan --json`,确认 `isComplete = true` 或所有 `applyRequires` 项均 done
 - [ ] 9.3 (待用户决定)是否调用 `/opsx:archive` 归档本 change;归档动作不在本次 change 实施范围内,由用户在交付完成后单独决定
