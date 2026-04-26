@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(hugo version *)",
+      "Bash(openspec --version)",
+      "Bash(openspec *)",
+      "WebFetch(domain:www.anthropic.com)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(hugo *)"
+    ]
+  }
+}
