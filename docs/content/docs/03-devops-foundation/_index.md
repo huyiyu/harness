@@ -61,7 +61,7 @@ flowchart LR
     style H fill:#ffcccc,stroke:#cc0000,stroke-width:2px
 {{< /mermaid >}}
 
-两者的差异不在于"自动化的程度"，而在于**"反馈的密度"**。
+两者的差异不在于"自动化的程度"，而在于"**反馈的密度**"。
 
 传统 DevOps 中，一个功能的编码、测试、修复可能只走一轮或两轮循环，因为人的参与限制了循环次数。Harness 中，Evaluator 的评估和 Generator 的完善可以在**分钟级**完成一轮，一个复杂功能可能经历多轮"评估→完善→再评估→再完善"，直到 Evaluator 的验收标准全部通过。
 
