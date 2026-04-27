@@ -23,38 +23,43 @@ Harness 的出现，把这个天花板打破了。
 
 **传统 DevOps 反馈环：**
 
-```
-人写代码 → 提交 → CI 构建 → 自动化测试 → 人验收 → 人修复 → 再提交
-   │                                                              │
-   └────────────── 循环周期：小时级 / 天级 ──────────────────────┘
-```
+{{< mermaid >}}
+flowchart LR
+    A[人写代码] --> B[提交]
+    B --> C[CI构建]
+    C --> D[自动化测试]
+    D --> E[人验收]
+    E -->|通过| F[部署]
+    E -->|不通过| G[人修复]
+    G --> B
+    
+    style A fill:#ffcccc,stroke:#cc0000,stroke-width:2px
+    style E fill:#ffcccc,stroke:#cc0000,stroke-width:2px
+    style G fill:#ffcccc,stroke:#cc0000,stroke-width:2px
+    style F fill:#ccffcc,stroke:#009900,stroke-width:2px
+{{< /mermaid >}}
 
 **Harness 反馈环：**
 
-```
-Planner 拆解 → Generator 编码 → Evaluator 评估 ──► 不通过
-                                              │      │
-                                              │      ▼
-                                              │   Generator 完善
-                                              │      │
-                                              │      ▼
-                                              └── 再次评估 ──► 通过
-                                                                   │
-                                                                   ▼
-                                                              部署到环境
-                                                                   │
-                                                                   ▼
-                                                            监控/日志反馈
-                                                                   │
-                                                                   ▼
-                                                              发现问题 ──► 回流完善
-                                                                   │
-                                                                   ▼
-                                                            多轮循环收敛
-                                                                   │
-                                                                   ▼
-                                                            程序员最终门禁
-```
+{{< mermaid >}}
+flowchart LR
+    P[Planner拆解] --> G[Generator编码]
+    G --> E[Evaluator评估]
+    E -->|不通过| G2[Generator完善]
+    G2 --> E
+    E -->|通过| D[部署到环境]
+    D --> M[监控反馈]
+    M -->|发现问题| G3[回流完善]
+    G3 --> E
+    M -->|正常| H[程序员门禁]
+    
+    style P fill:#cce5ff,stroke:#0066cc,stroke-width:2px
+    style G fill:#cce5ff,stroke:#0066cc,stroke-width:2px
+    style E fill:#cce5ff,stroke:#0066cc,stroke-width:2px
+    style G2 fill:#cce5ff,stroke:#0066cc,stroke-width:2px
+    style G3 fill:#cce5ff,stroke:#0066cc,stroke-width:2px
+    style H fill:#ffcccc,stroke:#cc0000,stroke-width:2px
+{{< /mermaid >}}
 
 两者的差异不在于"自动化的程度"，而在于**"反馈的密度"**。
 
