@@ -31,7 +31,7 @@ tasks.named('test') {
 }
 
 jib {
-    from { image = 'eclipse-temurin:21-jre' }
+    from { image = 'eclipse-temurin:25-jre' }
     to { image = 'lifecycle-biz:latest' }
     container {
         ports = ['8081']

@@ -12,6 +12,10 @@ services:
         gitlab_rails['gitlab_shell_ssh_port'] = ${GITLAB_SSH_PORT}
         gitlab_rails['initial_root_password'] = '${GITLAB_ROOT_PASSWORD}'
         puma['port'] = 8181
+        gitlab_rails['omniauth_enabled'] = true
+        gitlab_rails['omniauth_allow_single_sign_on'] = ['oauth2_generic']
+        gitlab_rails['omniauth_block_auto_created_users'] = false
+        gitlab_rails['omniauth_providers'] = [{'name' => 'oauth2_generic','app_id' => 'gitlab-client','app_secret' => 'gitlab-secret','args' => {'client_options' => {'site' => 'http://lifecycle:8081','authorize_url' => '/oauth/authorize','token_url' => '/oauth/token','user_info_url' => '/api/v4/user'},'user_response_structure' => {'id_path' => 'id','attributes' => {'name' => 'name','email' => 'email','nickname' => 'username'}}}}]
     ports:
       - "${GITLAB_PORT}:${GITLAB_PORT}"
       - "${GITLAB_SSH_PORT}:22"
@@ -21,6 +25,23 @@ services:
       - gitlab-data:/var/opt/gitlab
     networks:
       - devops
+
+  lifecycle:
+    image: ${LIFECYCLE_IMAGE}
+    container_name: lifecycle
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/harness?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      GITLAB_URL: http://gitlab:${GITLAB_PORT}
+      GITLAB_ADMIN_TOKEN: ${GITLAB_ADMIN_TOKEN}
+    ports:
+      - "8081:8081"
+    networks:
+      - devops
+    depends_on:
+      - mysql
+      - gitlab
 
   mysql:
     image: mysql:8.0
