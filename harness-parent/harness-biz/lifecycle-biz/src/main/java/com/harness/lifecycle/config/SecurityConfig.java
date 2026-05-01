@@ -13,7 +13,7 @@ public class SecurityConfig {
     @Order(2)
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/mock/**", "/api/v4/user", "/oauth/wechat/callback").permitAll()
+                .requestMatchers("/mock/**", "/api/v4/user", "/oauth/wechat/callback", "/auth/wechat/**").permitAll()
                 .anyRequest().authenticated())
             .csrf(csrf -> csrf.ignoringRequestMatchers("/oauth/wechat/callback"));
         return http.build();

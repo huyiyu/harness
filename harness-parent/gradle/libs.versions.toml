@@ -30,6 +30,7 @@ mysql-connector-j              = { module = "com.mysql:mysql-connector-j", versi
 spring-authorization-server  = { module = "org.springframework.security:spring-security-oauth2-authorization-server", version.ref = "spring-authorization-server" }
 spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security" }
 spring-boot-starter-thymeleaf = { module = "org.springframework.boot:spring-boot-starter-thymeleaf" }
+spring-boot-starter-oauth2-authorization-server = { module = "org.springframework.boot:spring-boot-starter-oauth2-authorization-server" }
 
 [plugins]
 spring-boot          = { id = "org.springframework.boot", version.ref = "spring-boot" }

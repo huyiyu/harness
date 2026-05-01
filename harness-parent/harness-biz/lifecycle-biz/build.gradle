@@ -13,6 +13,7 @@ dependencies {
     implementation libs.mybatis.plus.boot.starter
     implementation libs.spring.boot.starter.web
     runtimeOnly libs.mysql.connector.j
+    runtimeOnly 'commons-logging:commons-logging'
     compileOnly libs.mapstruct
     annotationProcessor libs.mapstruct.processor
     compileOnly libs.lombok
@@ -21,8 +22,7 @@ dependencies {
     testImplementation libs.spring.boot.starter.test
     testImplementation libs.archunit.junit5
 
-    implementation libs.spring.authorization.server
-    implementation libs.spring.boot.starter.security
+    implementation libs.spring.boot.starter.oauth2.authorization.server
     implementation libs.spring.boot.starter.thymeleaf
 }
 
