@@ -10,6 +10,8 @@ dependencies {
     compileOnly project(':harness-api:lifecycle-api')
 
     implementation libs.mybatis.plus.boot.starter
+    implementation libs.spring.boot.starter.web
+    runtimeOnly libs.mysql.connector.j
     compileOnly libs.mapstruct
     annotationProcessor libs.mapstruct.processor
     compileOnly libs.lombok
