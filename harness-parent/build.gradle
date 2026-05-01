@@ -36,10 +36,7 @@ subprojects {
         suppressionFile = rootProject.file('config/owasp-suppressions.xml')
     }
 
-    // OWASP 默认不运行，CI 通过 -PenableOwasp 开启
-    if (project.hasProperty('enableOwasp')) {
-        check.dependsOn(dependencyCheckAnalyze)
-    }
+    check.dependsOn(dependencyCheckAnalyze)
 
     // 只扫描主代码
     check.dependsOn(checkstyleMain, pmdMain)

@@ -86,11 +86,11 @@ com.harness.api.common/
 | 插件 | 职责 | 触发时机 |
 |------|------|---------|
 | Checkstyle | 代码风格（Google Java Style） | `gradle check` |
-| SpotBugs | 静态分析，潜在 bug | `gradle check` |
+| PMD | 静态分析，潜在 bug（替代 SpotBugs，兼容 Java 25） | `gradle check` |
 | OWASP Dependency Check | 依赖安全漏洞扫描 | `gradle check` |
 | ArchUnit | 架构约束（测试用例形式） | `gradle test` |
 
-三者全部绑定到 `check` task，`gradle build` 强制通过，不可跳过。
+四者全部绑定到 `check` task，`gradle build` 强制通过，不可跳过。
 
 ### 2.2 ArchUnit 约束范围
 
