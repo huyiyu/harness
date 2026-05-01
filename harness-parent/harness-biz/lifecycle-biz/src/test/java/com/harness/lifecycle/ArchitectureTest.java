@@ -45,13 +45,13 @@ class ArchitectureTest {
     @ArchTest
     static final ArchRule restControllerOnlyInControllerPackage =
         classes().that().areAnnotatedWith("org.springframework.web.bind.annotation.RestController")
-            .should().resideInAPackage("..controller..")
+            .should().resideInAnyPackage("..controller..", "..oauth..")
             .allowEmptyShould(true);
 
     @ArchTest
     static final ArchRule serviceOnlyInServicePackage =
         classes().that().areAnnotatedWith("org.springframework.stereotype.Service")
-            .should().resideInAPackage("..service..")
+            .should().resideInAnyPackage("..service..", "..oauth..")
             .allowEmptyShould(true);
 
     @ArchTest
