@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.dep.mgmt)
+    alias(libs.plugins.jib)
 }
 
 dependencies {
@@ -19,8 +20,21 @@ dependencies {
 
     testImplementation libs.spring.boot.starter.test
     testImplementation libs.archunit.junit5
+
+    implementation libs.spring.authorization.server
+    implementation libs.spring.boot.starter.security
+    implementation libs.spring.boot.starter.thymeleaf
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+jib {
+    from { image = 'eclipse-temurin:21-jre' }
+    to { image = 'lifecycle-biz:latest' }
+    container {
+        ports = ['8081']
+        jvmFlags = ['-Xms256m', '-Xmx512m']
+    }
 }
