@@ -22,7 +22,7 @@ subprojects {
     }
 
     spotbugs {
-        toolVersion = '4.8.6'
+        toolVersion = '4.9.3'
         excludeFilter = rootProject.file('config/spotbugs/exclude.xml')
         effort = 'max'
         reportLevel = 'low'
@@ -33,7 +33,14 @@ subprojects {
         suppressionFile = rootProject.file('config/owasp-suppressions.xml')
     }
 
-    check.dependsOn(checkstyleMain, spotbugsMain, dependencyCheckAnalyze)
+    // OWASP 默认不运行，CI 通过 -PenableOwasp 开启
+    if (project.hasProperty('enableOwasp')) {
+        check.dependsOn(dependencyCheckAnalyze)
+    }
+
+    // 只扫描主代码，测试代码不做 SpotBugs 检查
+    spotbugsTest.enabled = false
+    check.dependsOn(checkstyleMain, spotbugsMain)
 
     repositories {
         mavenCentral()

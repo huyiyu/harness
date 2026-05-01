@@ -18,3 +18,10 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+
+# Gradle
+.gradle/
+build/
+
+# Superpowers plans (generated artifacts)
+docs/superpowers/plans/
