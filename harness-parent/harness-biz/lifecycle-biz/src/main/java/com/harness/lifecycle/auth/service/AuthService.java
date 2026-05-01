@@ -32,7 +32,7 @@ public class AuthService {
         return gitLabProperties.getUrl() + "/?private_token=" + token;
     }
 
-    private long getOrCreateGitlabUser(String openid) {
+    public long getOrCreateGitlabUser(String openid) {
         WechatGitlabBinding binding = bindingMapper.selectOne(
             new LambdaQueryWrapper<WechatGitlabBinding>()
                 .eq(WechatGitlabBinding::getOpenid, openid));
