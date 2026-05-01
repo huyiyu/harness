@@ -1,0 +1,9 @@
+rootProject.name = 'harness-parent'
+
+include(
+    'harness-common:api-common',
+    'harness-common:biz-common',
+    'harness-common:auth-common',
+    'harness-api:lifecycle-api',
+    'harness-biz:lifecycle-biz'
+)

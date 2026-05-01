@@ -1,0 +1,20 @@
+plugins {
+    alias(libs.plugins.spring.boot)
+    alias(libs.plugins.spring.dep.mgmt)
+}
+
+dependencies {
+    implementation project(':harness-common:biz-common')
+    implementation project(':harness-common:auth-common')
+    compileOnly project(':harness-common:api-common')
+    compileOnly project(':harness-api:lifecycle-api')
+
+    implementation libs.mybatis.plus.boot.starter
+    compileOnly libs.mapstruct
+    annotationProcessor libs.mapstruct.processor
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+
+    testImplementation libs.spring.boot.starter.test
+    testImplementation libs.archunit.junit5
+}

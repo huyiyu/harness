@@ -1,0 +1,41 @@
+plugins {
+    alias(libs.plugins.spring.boot)       apply false
+    alias(libs.plugins.spring.dep.mgmt)   apply false
+    alias(libs.plugins.spotbugs.plugin)   apply false
+    alias(libs.plugins.owasp.plugin)      apply false
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'checkstyle'
+    apply plugin: 'com.github.spotbugs'
+    apply plugin: 'org.owasp.dependencycheck'
+
+    java {
+        toolchain { languageVersion = JavaLanguageVersion.of(25) }
+    }
+
+    checkstyle {
+        toolVersion = '10.20.1'
+        configFile = rootProject.file('config/checkstyle/checkstyle.xml')
+        maxWarnings = 0
+    }
+
+    spotbugs {
+        toolVersion = '4.8.6'
+        excludeFilter = rootProject.file('config/spotbugs/exclude.xml')
+        effort = 'max'
+        reportLevel = 'low'
+    }
+
+    dependencyCheck {
+        failBuildOnCVSS = 7
+        suppressionFile = rootProject.file('config/owasp-suppressions.xml')
+    }
+
+    check.dependsOn(checkstyleMain, spotbugsMain, dependencyCheckAnalyze)
+
+    repositories {
+        mavenCentral()
+    }
+}
