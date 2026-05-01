@@ -2,15 +2,16 @@ package com.harness.lifecycle.auth.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.harness.auth.gitlab.GitLabApi;
+import com.harness.auth.gitlab.GitLabProperties;
 import com.harness.auth.gitlab.PasswordGenerator;
 import com.harness.auth.gitlab.dto.CreateTokenRequest;
 import com.harness.auth.gitlab.dto.CreateUserRequest;
 import com.harness.lifecycle.auth.entity.WechatGitlabBinding;
 import com.harness.lifecycle.auth.mapper.WechatGitlabBindingMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,16 +21,15 @@ public class AuthService {
 
     private final GitLabApi gitLabApi;
     private final WechatGitlabBindingMapper bindingMapper;
-
-    @Value("${gitlab.url}")
-    private String gitlabUrl;
+    private final GitLabProperties gitLabProperties;
 
     public String login(String code) {
         String openid = code;
         long gitlabUserId = getOrCreateGitlabUser(openid);
+        String expiresAt = LocalDate.now().plusYears(1).toString();
         String token = gitLabApi.createImpersonationToken(gitlabUserId,
-            new CreateTokenRequest("wechat-login", List.of("api", "read_user"))).token();
-        return gitlabUrl + "/?private_token=" + token;
+            new CreateTokenRequest("wechat-login", List.of("api", "read_user"), expiresAt)).token();
+        return gitLabProperties.getUrl() + "/?private_token=" + token;
     }
 
     private long getOrCreateGitlabUser(String openid) {
