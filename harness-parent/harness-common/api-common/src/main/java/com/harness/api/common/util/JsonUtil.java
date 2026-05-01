@@ -1,5 +1,6 @@
 package com.harness.api.common.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,7 +20,7 @@ public final class JsonUtil {
     public static String object2Json(Object obj) {
         try {
             return MAPPER.writeValueAsString(obj);
-        } catch (Exception e) {
+        } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("JSON serialize failed", e);
         }
     }
@@ -27,7 +28,7 @@ public final class JsonUtil {
     public static <T> T json2Object(String json, Class<T> clazz) {
         try {
             return MAPPER.readValue(json, clazz);
-        } catch (Exception e) {
+        } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("JSON deserialize failed", e);
         }
     }
@@ -36,7 +37,7 @@ public final class JsonUtil {
         try {
             return MAPPER.readValue(json,
                 MAPPER.getTypeFactory().constructCollectionType(List.class, clazz));
-        } catch (Exception e) {
+        } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("JSON deserialize list failed", e);
         }
     }
@@ -44,7 +45,7 @@ public final class JsonUtil {
     public static <T> T json2Object(String json, TypeReference<T> typeRef) {
         try {
             return MAPPER.readValue(json, typeRef);
-        } catch (Exception e) {
+        } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("JSON deserialize failed", e);
         }
     }

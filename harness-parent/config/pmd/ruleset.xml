@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="harness-ruleset"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>Harness PMD ruleset (migrated from SpotBugs)</description>
+
+    <rule ref="category/java/errorprone.xml">
+        <!-- ArchUnit 测试类用 @ArchTest 字段，没有 @Test 方法，排除此误报 -->
+        <exclude name="TestClassWithoutTestCases"/>
+    </rule>
+    <rule ref="category/java/bestpractices.xml"/>
+    <rule ref="category/java/performance.xml"/>
+
+    <!-- 对应 SpotBugs EI_EXPOSE_REP/EI_EXPOSE_REP2：entity 类排除可变对象暴露规则 -->
+    <rule ref="category/java/bestpractices.xml/MethodReturnsInternalArray">
+        <properties>
+            <property name="violationSuppressXPath"
+                      value="//ClassDeclaration[matches(@SimpleName, '.*')]
+                             [ancestor-or-self::*[contains(@PackageName, '.entity.')]]"/>
+        </properties>
+    </rule>
+    <rule ref="category/java/bestpractices.xml/ArrayIsStoredDirectly">
+        <properties>
+            <property name="violationSuppressXPath"
+                      value="//ClassDeclaration[ancestor-or-self::*[contains(@PackageName, '.entity.')]]"/>
+        </properties>
+    </rule>
+
+</ruleset>
