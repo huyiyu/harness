@@ -13,7 +13,8 @@ docs/                          # Hugo 文档站点
     04-sre-foundation/         # 第四章：SRE 与可靠性工程
     05-collaboration-paradigm/ # 第五章：人机协作范式
     06-closed-loop-framework/  # 第六章：全生命周期闭环框架
-    ...                        # 后续章节
+    07-agent-roles/            # 第七章：Agent 角色体系与分工模型
+    08-overall-architecture/   # 第八章：总体架构：AI 执行引擎与人类验收层
   themes/hugo-book/            # 主题
 openspec/                      # OpenSpec 变更管理
   specs/                       # 能力规格（内容标准）
@@ -28,10 +29,11 @@ openspec/                      # OpenSpec 变更管理
 每章正文开发遵循以下流程：
 
 1. **用户给出章节框架**（大纲、核心论点、关键案例）
-2. **`/opsx:propose <name>`** —— 创建 openspec change，生成 proposal / design / specs / tasks
-3. **`/opsx:apply <name>`** —— 按 tasks 逐条实现正文内容
-4. **`/opsx:archive <name>`** —— 归档 change，同步 specs 到 `openspec/specs/`
-5. **`git commit && git push`** —— 提交并推送
+2. **`/superpowers:brainstorming <name>`** —— 探索需求，明确章节设计
+3. **`/superpowers:writing-plans`** —— 生成实现计划（proposal / design / tasks）
+4. **`/superpowers:executing-plans`** —— 按 tasks 逐条实现正文内容
+5. **`/superpowers:verification-before-completion`** —— 验收，同步 specs 到 `openspec/specs/`
+6. **`git commit && git push`** —— 提交并推送
 
 ### 前后章衔接检查
 
@@ -111,22 +113,8 @@ openspec/                      # OpenSpec 变更管理
 
 ## openspec 使用约定
 
-### 变更命名
-
-章节开发使用统一前缀：`write-chapter-XX-<kebab-topic>`
-
-示例：
-- `write-chapter-05-collaboration-paradigm`
-- `write-chapter-06-closed-loop-framework`
-
 ### specs 同步策略
 
-章节内容规格（content specs）属于项目资产，归档时应同步到 `openspec/specs/`：
+章节内容规格（content specs）属于项目资产，完成后应同步到 `openspec/specs/`：
 - 新章节的能力规格 → 新增到 `openspec/specs/<capability>/spec.md`
 - 已有章节的修改 → 创建 delta spec 并同步
-
-### 归档后清理
-
-归档完成后确认：
-- `openspec/changes/` 下无残留目录（全部移至 `archive/`）
-- `openspec/specs/` 已包含最新同步的规格
