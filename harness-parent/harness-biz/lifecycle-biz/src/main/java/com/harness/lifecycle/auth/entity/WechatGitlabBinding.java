@@ -13,5 +13,6 @@ public class WechatGitlabBinding {
     @TableId
     private String openid;
     private Long gitlabUserId;
+    private String initialPassword;
     private LocalDateTime createdAt;
 }

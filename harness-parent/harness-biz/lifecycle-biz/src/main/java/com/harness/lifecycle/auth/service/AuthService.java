@@ -2,6 +2,9 @@ package com.harness.lifecycle.auth.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.harness.auth.gitlab.GitLabApi;
+import com.harness.auth.gitlab.PasswordGenerator;
+import com.harness.auth.gitlab.dto.CreateTokenRequest;
+import com.harness.auth.gitlab.dto.CreateUserRequest;
 import com.harness.lifecycle.auth.entity.WechatGitlabBinding;
 import com.harness.lifecycle.auth.mapper.WechatGitlabBindingMapper;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -23,10 +25,10 @@ public class AuthService {
     private String gitlabUrl;
 
     public String login(String code) {
-        String openid = code; // mock: code 即 openid
-
+        String openid = code;
         long gitlabUserId = getOrCreateGitlabUser(openid);
-        String token = createImpersonationToken(gitlabUserId);
+        String token = gitLabApi.createImpersonationToken(gitlabUserId,
+            new CreateTokenRequest("wechat-login", List.of("api", "read_user"))).token();
         return gitlabUrl + "/?private_token=" + token;
     }
 
@@ -34,42 +36,34 @@ public class AuthService {
         WechatGitlabBinding binding = bindingMapper.selectOne(
             new LambdaQueryWrapper<WechatGitlabBinding>()
                 .eq(WechatGitlabBinding::getOpenid, openid));
-
         if (binding != null) {
             return binding.getGitlabUserId();
         }
 
         String username = "wechat_" + openid;
-        List<Map<String, Object>> existing = gitLabApi.findUsers(username);
+        var existing = gitLabApi.findUsers(username);
+        String password = PasswordGenerator.generate();
         long userId = existing.isEmpty()
-            ? createUser(openid, username)
-            : ((Number) existing.get(0).get("id")).longValue();
+            ? gitLabApi.createUser(buildCreateUserRequest(openid, username, password)).id()
+            : existing.get(0).id();
 
         WechatGitlabBinding newBinding = new WechatGitlabBinding();
         newBinding.setOpenid(openid);
         newBinding.setGitlabUserId(userId);
+        newBinding.setInitialPassword(password);
         newBinding.setCreatedAt(LocalDateTime.now());
         bindingMapper.insert(newBinding);
         return userId;
     }
 
-    private long createUser(String openid, String username) {
+    private CreateUserRequest buildCreateUserRequest(String openid, String username, String password) {
         String shortId = openid.length() > 8 ? openid.substring(0, 8) : openid;
-        Map<String, Object> result = gitLabApi.createUser(Map.of(
-            "username", username,
-            "email", openid + "@wechat.mock",
-            "name", "微信用户_" + shortId,
-            "password", "Wechat@" + username,
-            "skip_confirmation", true
-        ));
-        return ((Number) result.get("id")).longValue();
-    }
-
-    private String createImpersonationToken(long userId) {
-        Map<String, Object> result = gitLabApi.createImpersonationToken(userId, Map.of(
-            "name", "wechat-login",
-            "scopes", List.of("api", "read_user")
-        ));
-        return (String) result.get("token");
+        return CreateUserRequest.builder()
+            .username(username)
+            .email(openid + "@wechat.mock")
+            .name("微信用户_" + shortId)
+            .password(password)
+            .skipConfirmation(true)
+            .build();
     }
 }
