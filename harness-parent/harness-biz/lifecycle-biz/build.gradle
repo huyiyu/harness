@@ -22,8 +22,6 @@ dependencies {
     testImplementation libs.spring.boot.starter.test
     testImplementation libs.archunit.junit5
 
-    implementation libs.spring.boot.starter.oauth2.authorization.server
-    implementation libs.spring.boot.starter.thymeleaf
 }
 
 tasks.named('test') {
@@ -31,10 +29,22 @@ tasks.named('test') {
 }
 
 jib {
-    from { image = 'eclipse-temurin:25-jre' }
+    from {
+        image = 'eclipse-temurin:25-jre'
+        platforms {
+            platform {
+                architecture = "amd64"
+                os = 'linux'
+            }
+        }
+    }
     to { image = 'lifecycle-biz:latest' }
     container {
         ports = ['8081']
         jvmFlags = ['-Xms256m', '-Xmx512m']
+    }
+    dockerClient {
+        executable = '/usr/local/bin/docker'
+        environment = ['DOCKER_HOST': "unix://${System.getProperty('user.home')}/.orbstack/run/docker.sock".toString()]
     }
 }

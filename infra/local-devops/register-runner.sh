@@ -8,8 +8,9 @@ GITLAB_URL="http://localhost:${GITLAB_PORT}"
 GITLAB_INTERNAL_URL="http://gitlab:${GITLAB_PORT}"
 
 echo "Waiting for GitLab to be ready..."
-until curl -sf "${GITLAB_URL}/-/health" > /dev/null; do
-  sleep 5
+until curl -sf "${GITLAB_URL}/users/sign_in" > /dev/null 2>&1; do
+  echo "  not ready, retrying in 10s..."
+  sleep 10
 done
 echo "GitLab is ready."
 

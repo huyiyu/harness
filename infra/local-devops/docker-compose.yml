@@ -15,7 +15,7 @@ services:
         gitlab_rails['omniauth_enabled'] = true
         gitlab_rails['omniauth_allow_single_sign_on'] = ['oauth2_generic']
         gitlab_rails['omniauth_block_auto_created_users'] = false
-        gitlab_rails['omniauth_providers'] = [{'name' => 'oauth2_generic','app_id' => 'gitlab-client','app_secret' => 'gitlab-secret','args' => {'client_options' => {'site' => 'http://lifecycle:8081','authorize_url' => '/oauth/authorize','token_url' => '/oauth/token','user_info_url' => '/api/v4/user'},'user_response_structure' => {'id_path' => 'id','attributes' => {'name' => 'name','email' => 'email','nickname' => 'username'}}}}]
+        gitlab_rails['omniauth_providers'] = [{'name' => 'oauth2_generic','app_id' => 'gitlab-client','app_secret' => 'gitlab-secret','args' => {'client_options' => {'site' => 'http://lifecycle:8081','authorize_url' => 'http://localhost:8081/oauth/authorize','token_url' => '/oauth/token','user_info_url' => '/api/v4/user'},'user_response_structure' => {'id_path' => 'id','attributes' => {'name' => 'name','email' => 'email','nickname' => 'username'}}}}]
     ports:
       - "${GITLAB_PORT}:${GITLAB_PORT}"
       - "${GITLAB_SSH_PORT}:22"
