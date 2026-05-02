@@ -14,7 +14,9 @@
       "Bash(curl *)",
       "Bash(./gradlew  *)",
       "Bash(mkdir -p /Users/hushuying/github/harness/harness-parent/harness-common/auth-common/src/main/java/com/harness/auth/gitlab)",
-      "Bash(mkdir -p /Users/hushuying/github/harness/harness-parent/harness-common/auth-common/src/main/resources/META-INF/spring)"
+      "Bash(mkdir -p /Users/hushuying/github/harness/harness-parent/harness-common/auth-common/src/main/resources/META-INF/spring)",
+      "Bash(gradle *)",
+      "Bash(git *)"
     ]
   }
 }
