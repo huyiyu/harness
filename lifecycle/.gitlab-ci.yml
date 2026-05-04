@@ -14,3 +14,37 @@ cache:
     - .gradle/wrapper
     - .gradle/caches
     - .gradle/dependency-check-data
+
+checkstyle:
+  stage: validate
+  image: eclipse-temurin:25-jdk
+  script:
+    - ./gradlew checkstyleMain checkstyleTest
+  artifacts:
+    paths:
+      - build/reports/checkstyle/
+    expire_in: 30 days
+    when: always
+
+pmd:
+  stage: validate
+  image: eclipse-temurin:25-jdk
+  script:
+    - ./gradlew pmdMain pmdTest
+  artifacts:
+    paths:
+      - build/reports/pmd/
+    expire_in: 30 days
+    when: always
+
+dependency-check:
+  stage: validate
+  image: eclipse-temurin:25-jdk
+  script:
+    - ./gradlew dependencyCheckAnalyze
+  artifacts:
+    paths:
+      - build/reports/dependency-check-report.html
+    expire_in: 30 days
+    when: always
+  allow_failure: true
