@@ -1,0 +1,5 @@
+dependencies {
+    compileOnly project(':harness-common:api-common')
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+}

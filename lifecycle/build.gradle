@@ -1,0 +1,54 @@
+plugins {
+    alias(libs.plugins.spring.boot)       apply false
+    alias(libs.plugins.spring.dep.mgmt)   apply false
+    alias(libs.plugins.owasp.plugin)      apply false
+    alias(libs.plugins.jib) apply false
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'checkstyle'
+    apply plugin: 'pmd'
+    apply plugin: 'org.owasp.dependencycheck'
+
+    java {
+        toolchain { languageVersion = JavaLanguageVersion.of(25) }
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.release = 21
+    }
+
+    checkstyle {
+        toolVersion = '10.20.1'
+        configFile = rootProject.file('config/checkstyle/checkstyle.xml')
+        maxWarnings = 0
+    }
+
+    pmd {
+        toolVersion = '7.24.0'
+        ruleSets = []
+        ruleSetFiles = rootProject.files('config/pmd/ruleset.xml')
+        consoleOutput = true
+    }
+
+    dependencyCheck {
+        failBuildOnCVSS = 7
+        suppressionFile = rootProject.file('config/owasp-suppressions.xml')
+    }
+
+    check.dependsOn(dependencyCheckAnalyze)
+
+    // 只扫描主代码
+    check.dependsOn(checkstyleMain, pmdMain)
+
+    repositories {
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://maven.aliyun.com/repository/spring' }
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation platform(libs.spring.boot.bom)
+    }
+}

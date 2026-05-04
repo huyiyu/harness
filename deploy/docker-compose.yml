@@ -1,0 +1,130 @@
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - devops
+    depends_on:
+      - gitlab
+
+  gitlab:
+    image: gitlab/gitlab-ce:latest
+    container_name: gitlab
+    restart: unless-stopped
+    hostname: localhost
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://gitlab.harness.ai'
+        nginx['listen_port'] = ${GITLAB_PORT}
+        nginx['listen_https'] = false
+        gitlab_rails['gitlab_shell_ssh_port'] = ${GITLAB_SSH_PORT}
+        gitlab_rails['initial_root_password'] = '${GITLAB_ROOT_PASSWORD}'
+        puma['port'] = 8181
+        # gitlab_rails['omniauth_enabled'] = true
+        # gitlab_rails['omniauth_allow_single_sign_on'] = ['oauth2_generic']
+        # gitlab_rails['omniauth_block_auto_created_users'] = false
+        # gitlab_rails['omniauth_providers'] = [{'name' => 'oauth2_generic','app_id' => 'gitlab-client','app_secret' => 'gitlab-secret','args' => {'client_options' => {'site' => 'http://lifecycle.harness.ai','authorize_url' => '/oauth/authorize','token_url' => '/oauth/token','user_info_url' => '/api/v4/user'},'user_response_structure' => {'id_path' => 'id','attributes' => {'name' => 'name','email' => 'email','nickname' => 'username'}}}}]
+    ports:
+      - "${GITLAB_SSH_PORT}:22"
+    volumes:
+      - gitlab-config:/etc/gitlab
+      - gitlab-logs:/var/log/gitlab
+      - gitlab-data:/var/opt/gitlab
+    networks:
+      - devops
+
+  lifecycle:
+    image: ${LIFECYCLE_IMAGE}
+    container_name: lifecycle
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/harness?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      GITLAB_URL: http://gitlab.harness.ai
+      GITLAB_ADMIN_TOKEN: ${GITLAB_ADMIN_TOKEN}
+    ports:
+      - "8081:8081"
+    networks:
+      - devops
+    depends_on:
+      - mysql
+      - gitlab
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: harness
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./apollo-sql:/docker-entrypoint-initdb.d:ro
+    networks:
+      - devops
+
+  gitlab-runner:
+    image: gitlab/gitlab-runner:latest
+    container_name: gitlab-runner
+    restart: unless-stopped
+    volumes:
+      - runner-config:/etc/gitlab-runner
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - devops
+    depends_on:
+      - gitlab
+
+  apollo:
+    image: nobodyiam/apollo-quick-start:latest
+    container_name: apollo
+    restart: unless-stopped
+    environment:
+      APOLLO_CONFIG_DB_URL: jdbc:mysql://mysql:3306/ApolloConfigDB?characterEncoding=utf8
+      APOLLO_CONFIG_DB_USERNAME: root
+      APOLLO_CONFIG_DB_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      APOLLO_PORTAL_DB_URL: jdbc:mysql://mysql:3306/ApolloPortalDB?characterEncoding=utf8
+      APOLLO_PORTAL_DB_USERNAME: root
+      APOLLO_PORTAL_DB_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      EUREKA_INSTANCE_IP_ADDRESS: apollo
+    ports:
+      - "8070:8070"
+      - "8080:8080"
+      - "8090:8090"
+    networks:
+      - devops
+    depends_on:
+      - mysql
+
+  registry:
+    image: registry:2
+    container_name: registry
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      REGISTRY_AUTH: htpasswd
+      REGISTRY_AUTH_HTPASSWD_REALM: Registry Realm
+      REGISTRY_AUTH_HTPASSWD_PATH: /auth/htpasswd
+    volumes:
+      - registry-data:/var/lib/registry
+      - ./registry-auth:/auth:ro
+    networks:
+      - devops
+networks:
+  devops:
+    driver: bridge
+volumes:
+  gitlab-config:
+  gitlab-logs:
+  gitlab-data:
+  runner-config:
+  mysql-data:
+  registry-data:

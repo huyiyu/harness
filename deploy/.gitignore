@@ -1,0 +1,10 @@
+gitlab/data/
+gitlab/logs/
+mysql-data/
+registry-data/
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+*.log
