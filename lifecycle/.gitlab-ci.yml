@@ -19,7 +19,9 @@ checkstyle:
   stage: validate
   image: eclipse-temurin:25-jdk
   script:
-    - ./gradlew checkstyleMain checkstyleTest
+    - pwd
+    - ./gradlew checkstyleMain checkstyleTest -s
+    - ls 
   artifacts:
     paths:
       - build/reports/checkstyle/

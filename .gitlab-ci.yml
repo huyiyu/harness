@@ -25,7 +25,7 @@ checkstyle:
     - ./gradlew checkstyleMain checkstyleTest
   artifacts:
     paths:
-      - build/reports/checkstyle/
+      - "**/build/reports/checkstyle/"
     expire_in: 30 days
     when: always
 
@@ -36,7 +36,7 @@ pmd:
     - ./gradlew pmdMain pmdTest
   artifacts:
     paths:
-      - build/reports/pmd/
+      - "**/build/reports/pmd/"
     expire_in: 30 days
     when: always
 
@@ -47,7 +47,7 @@ dependency-check:
     - ./gradlew dependencyCheckAnalyze
   artifacts:
     paths:
-      - build/reports/dependency-check-report.html
+      - "**/build/reports/dependency-check-report.html"
     expire_in: 30 days
     when: always
   allow_failure: true
@@ -59,10 +59,10 @@ unit-test:
     - ./gradlew test
   artifacts:
     reports:
-      junit: build/test-results/test/*.xml
+      junit: "**/build/test-results/test/*.xml"
     paths:
-      - build/reports/tests/test/
-      - build/test-results/test/
+      - "**/build/reports/tests/test/"
+      - "**/build/test-results/test/"
     expire_in: 30 days
     when: always
 
