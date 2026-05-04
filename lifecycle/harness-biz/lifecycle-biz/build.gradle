@@ -29,6 +29,12 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+// 在配置阶段提取属性，避免在任务执行时访问 project
+def registryUsername = project.findProperty('registryUsername') ?: ''
+def registryPassword = project.findProperty('registryPassword') ?: ''
+def registryUrl = project.findProperty('registryUrl') ?: 'registry.harness.ai'
+def commitSha = System.getenv('CI_COMMIT_SHORT_SHA') ?: 'dev'
+
 jib {
     allowInsecureRegistries = true
 
@@ -41,17 +47,17 @@ jib {
             }
         }
         auth {
-            username = project.findProperty('registryUsername') ?: ''
-            password = project.findProperty('registryPassword') ?: ''
+            username = registryUsername
+            password = registryPassword
         }
     }
 
     to {
-        image = "${project.findProperty('registryUrl') ?: 'registry.harness.ai'}/lifecycle-biz"
-        tags = ['latest', System.getenv('CI_COMMIT_SHORT_SHA') ?: 'dev']
+        image = "${registryUrl}/lifecycle-biz"
+        tags = ['latest', commitSha]
         auth {
-            username = project.findProperty('registryUsername') ?: ''
-            password = project.findProperty('registryPassword') ?: ''
+            username = registryUsername
+            password = registryPassword
         }
     }
 
