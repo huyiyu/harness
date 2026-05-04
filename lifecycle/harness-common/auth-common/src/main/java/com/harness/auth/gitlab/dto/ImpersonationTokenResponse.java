@@ -1,3 +1,3 @@
 package com.harness.auth.gitlab.dto;
 
-public record ImpersonationTokenResponse(String token) {}
+public record ImpersonationTokenResponse(String token) { }

@@ -40,16 +40,20 @@ jib {
                 os = 'linux'
             }
         }
+        auth {
+            username = project.findProperty('registryUsername') ?: ''
+            password = project.findProperty('registryPassword') ?: ''
+        }
     }
 
     to {
-        image = "${project.findProperty('registryUrl')}/lifecycle-biz"
+        image = "${project.findProperty('registryUrl') ?: 'registry.harness.ai'}/lifecycle-biz"
         tags = ['latest', providers.exec {
             commandLine 'git', 'rev-parse', '--short', 'HEAD'
         }.standardOutput.asText.get().trim()]
         auth {
-            username = project.findProperty('registryUsername')
-            password = project.findProperty('registryPassword')
+            username = project.findProperty('registryUsername') ?: ''
+            password = project.findProperty('registryPassword') ?: ''
         }
     }
 

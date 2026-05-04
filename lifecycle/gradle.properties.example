@@ -1,0 +1,4 @@
+# Registry Configuration
+registryUrl=registry.harness.ai
+registryUsername=admin
+registryPassword=admin

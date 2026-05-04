@@ -10,7 +10,20 @@
         <!-- ArchUnit 测试类用 @ArchTest 字段，没有 @Test 方法，排除此误报 -->
         <exclude name="TestClassWithoutTestCases"/>
     </rule>
-    <rule ref="category/java/bestpractices.xml"/>
+
+    <!-- 测试代码排除重复字符串字面量检查 -->
+    <rule ref="category/java/errorprone.xml/AvoidDuplicateLiterals">
+        <properties>
+            <property name="violationSuppressXPath"
+                      value="//ClassDeclaration[matches(@SimpleName, '.*Test$')]"/>
+        </properties>
+    </rule>
+
+    <rule ref="category/java/bestpractices.xml">
+        <!-- 测试代码排除断言数量限制 -->
+        <exclude name="UnitTestShouldIncludeAssert"/>
+        <exclude name="UnitTestContainsTooManyAsserts"/>
+    </rule>
     <rule ref="category/java/performance.xml"/>
 
     <!-- 对应 SpotBugs EI_EXPOSE_REP/EI_EXPOSE_REP2：entity 类排除可变对象暴露规则 -->

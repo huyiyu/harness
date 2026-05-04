@@ -14,7 +14,7 @@ public final class PasswordGenerator {
     private static final String ALL = UPPER + LOWER + DIGITS + SYMBOLS;
     private static final SecureRandom RANDOM = new SecureRandom();
 
-    private PasswordGenerator() {}
+    private PasswordGenerator() { }
 
     public static String generate() {
         List<Character> chars = new ArrayList<>(16);

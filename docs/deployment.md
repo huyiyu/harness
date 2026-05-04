@@ -100,6 +100,28 @@ done
 **Linux/macOS**：编辑 `/etc/hosts`
 **Windows**：编辑 `C:\Windows\System32\drivers\etc\hosts`
 
+> **注意**：hosts 配置仅对宿主机生效。Docker 容器内的 DNS 解析通过 Docker 网络别名实现，详见下文。
+
+### 4. Docker 权限配置（Linux）
+
+Linux 用户需要将当前用户添加到 docker 组以执行 Docker 命令：
+
+```bash
+sudo usermod -aG docker $USER
+```
+
+然后重新登录或执行：
+
+```bash
+newgrp docker
+```
+
+验证权限：
+
+```bash
+docker ps
+```
+
 ---
 
 ## 一键部署
@@ -154,9 +176,11 @@ docker compose up -d
 1. 轮询等待 GitLab 就绪
 2. 通过 Rails console 创建 root 用户的 Personal Access Token
 3. 调用 GitLab API 创建 Runner
-4. 执行 `gitlab-runner register` 完成注册
+4. 执行 `gitlab-runner register` 完成注册，**配置 CI 作业容器使用 `deploy_devops` 网络**
 
 注册成功后，在 GitLab Admin → CI/CD → Runners 中可见。
+
+> **重要**：Runner 注册时会配置 `--docker-network-mode "deploy_devops"`，确保 CI 作业容器能够通过 Docker 网络别名解析 `gitlab.harness.ai` 等域名。
 
 ---
 
@@ -189,7 +213,19 @@ docker compose up -d
 
 ### Nginx
 
-当前配置（`nginx/nginx.conf`）仅启用了 GitLab 反向代理，Lifecycle/Registry/Apollo 的代理配置被注释（可直接访问或按需开启）：
+**网络别名配置**：Nginx 服务配置了 Docker 网络别名，使容器间可以通过域名访问：
+
+```yaml
+networks:
+  devops:
+    aliases:
+      - gitlab.harness.ai
+      - registry.harness.ai
+```
+
+这样，`deploy_devops` 网络中的所有容器（包括 CI 作业容器）都可以通过这些域名访问 Nginx，Nginx 再代理到后端服务。
+
+当前配置（`nginx/nginx.conf`）仅启用了 GitLab 和 Registry 反向代理：
 
 ```nginx
 server {
@@ -406,3 +442,64 @@ docker compose logs -f <service-name>
 lsof -Pi :8080 -sTCP:LISTEN
 # 或修改 .env / docker-compose.yml 中的端口映射
 ```
+
+### CI 作业容器 DNS 解析失败
+
+**现象**：CI pipeline 失败，日志显示：
+```
+fatal: unable to access 'http://gitlab.harness.ai/...': Could not resolve host: gitlab.harness.ai
+```
+或
+```
+Failed to connect to gitlab.harness.ai port 80: Couldn't connect to server
+```
+
+**原因**：
+1. Docker 网络别名未正确配置
+2. Runner 未配置使用 `deploy_devops` 网络
+3. Nginx 容器未正确重启以应用网络别名
+
+**排查步骤**：
+
+1. **检查 Runner 网络配置**：
+```bash
+docker exec gitlab-runner cat /etc/gitlab-runner/config.toml | grep network_mode
+# 应输出: network_mode = "deploy_devops"
+```
+
+2. **检查 Nginx 网络别名**：
+```bash
+docker inspect nginx --format='{{json .NetworkSettings.Networks.deploy_devops.Aliases}}'
+# 应包含: ["nginx","gitlab.harness.ai","registry.harness.ai"]
+```
+
+3. **测试容器内 DNS 解析**：
+```bash
+docker exec lifecycle curl -I http://gitlab.harness.ai
+# 应返回 HTTP 响应头
+```
+
+**解决方案**：
+
+1. **重新创建 Nginx 容器**（如果网络别名未生效）：
+```bash
+cd deploy
+docker compose up -d --force-recreate nginx
+```
+
+2. **重新注册 Runner**（如果网络模式未配置）：
+```bash
+docker exec gitlab-runner gitlab-runner unregister --all-runners
+cd deploy && ./register-runner.sh
+```
+
+3. **验证修复**：
+```bash
+# 检查 Runner 配置
+docker exec gitlab-runner cat /etc/gitlab-runner/config.toml | grep network_mode
+
+# 触发 CI 测试
+git commit --allow-empty -m "Test CI" && git push
+```
+
+> **注意**：使用 `docker restart nginx` 不会应用 docker-compose.yml 中的网络配置变更，必须使用 `docker compose up -d --force-recreate`。

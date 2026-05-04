@@ -10,4 +10,4 @@ public record CreateUserRequest(
     String name,
     String password,
     @JsonProperty("skip_confirmation") boolean skipConfirmation
-) {}
+) { }

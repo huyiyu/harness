@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC
+    "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
+    "https://checkstyle.org/dtds/suppressions_1_2.dtd">
+<suppressions>
+    <!-- 测试代码允许使用下划线命名方法 -->
+    <suppress checks="MethodName" files=".*[/\\]test[/\\].*\.java$"/>
+
+    <!-- 测试代码允许使用驼峰命名常量 -->
+    <suppress checks="ConstantName" files=".*[/\\]test[/\\].*\.java$"/>
+</suppressions>

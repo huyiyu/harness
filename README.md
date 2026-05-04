@@ -29,7 +29,10 @@ cd deploy && docker compose up -d && ./register-runner.sh
 | Apollo Portal | http://apollo.harness.ai:8070 | `apollo` / `admin` |
 | Registry | http://registry.harness.ai | `admin` / `admin` |
 
-> 首次启动需先配置 hosts，详见 [部署指南](docs/deployment.md)。
+> **前置要求**：
+> 1. 配置 `/etc/hosts`（详见 [部署指南](docs/deployment.md)）
+> 2. Linux 用户需配置 Docker 权限：`sudo usermod -aG docker $USER && newgrp docker`
+> 3. 确保端口 80/3306/8070/8080/8081/8090/22222/5000 未被占用
 
 ---
 
@@ -48,18 +51,25 @@ cd deploy && docker compose up -d && ./register-runner.sh
 ```
 ┌─────────────────────────────────────────────────────────┐
 │  Nginx (统一入口 :80)                                    │
-│  ├── gitlab.harness.ai  → GitLab CE (:8080)             │
-│  └── (lifecycle/registry/apollo 直连或预留扩展)          │
+│  ├── gitlab.harness.ai  → GitLab CE (:80)               │
+│  ├── registry.harness.ai → Registry (:5000)             │
+│  └── (lifecycle/apollo 直连或预留扩展)                   │
 ├─────────────────────────────────────────────────────────┤
-│  Docker Compose 网络 (devops)                           │
+│  Docker Compose 网络 (deploy_devops)                    │
+│  ├── 网络别名: gitlab.harness.ai, registry.harness.ai   │
 │  ├── GitLab CE        代码托管 & CI/CD                  │
-│  ├── GitLab Runner    CI/CD 执行器                      │
+│  ├── GitLab Runner    CI/CD 执行器 (network_mode配置)   │
 │  ├── Lifecycle        Spring Boot 业务服务 (:8081)      │
 │  ├── Apollo           配置中心 (:8070/8080/8090)        │
 │  ├── MySQL 8.0        共享数据库 (:3306)                │
 │  └── Registry 2       私有镜像仓库 (:5000)              │
 └─────────────────────────────────────────────────────────┘
 ```
+
+**关键设计**：
+- Nginx 配置网络别名，使 CI 作业容器能通过域名访问 GitLab
+- Runner 配置 `--docker-network-mode "deploy_devops"` 确保作业容器在同一网络
+- 宿主机通过 `/etc/hosts` 访问，容器通过 Docker 内部 DNS 访问
 
 ---
 

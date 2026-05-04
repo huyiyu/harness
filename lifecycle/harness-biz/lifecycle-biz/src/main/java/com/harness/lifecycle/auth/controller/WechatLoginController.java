@@ -10,7 +10,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
 import java.util.List;
@@ -44,10 +49,10 @@ public class WechatLoginController {
     }
 
     @GetMapping("/oauth/authorize")
-    public void oauthAuthorize(@RequestParam String redirect_uri,
+    public void oauthAuthorize(@RequestParam("redirect_uri") String redirectUri,
                                @RequestParam(required = false) String state,
                                HttpServletResponse response) throws IOException {
-        String wechatState = tokenStore.savePending(redirect_uri, state);
+        String wechatState = tokenStore.savePending(redirectUri, state);
         response.sendRedirect("/mock/wechat/authorize?redirect_uri=http://lifecycle.harnesss.com/oauth/wechat/callback&state=" + wechatState);
     }
 

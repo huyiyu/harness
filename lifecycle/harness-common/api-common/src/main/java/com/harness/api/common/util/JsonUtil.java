@@ -15,7 +15,7 @@ public final class JsonUtil {
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
-    private JsonUtil() {}
+    private JsonUtil() { }
 
     public static String object2Json(Object obj) {
         try {

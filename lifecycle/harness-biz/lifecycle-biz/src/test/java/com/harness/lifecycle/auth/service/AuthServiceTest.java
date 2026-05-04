@@ -22,7 +22,12 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
@@ -63,8 +68,10 @@ class AuthServiceTest {
         when(gitLabApi.findUsers("wechat_new_openid")).thenReturn(List.of());
         when(gitLabApi.createUser(any(CreateUserRequest.class)))
             .thenReturn(new GitLabUserResponse(99L, "wechat_new_openid", "new_openid@wechat.mock"));
-        doAnswer(inv -> { inserted.add(inv.getArgument(0)); return 1; })
-            .when(bindingMapper).insert(any(WechatGitlabBinding.class));
+        doAnswer(inv -> {
+            inserted.add(inv.getArgument(0));
+            return 1;
+        }).when(bindingMapper).insert(any(WechatGitlabBinding.class));
 
         String result = authService.login("new_openid");
 
@@ -80,8 +87,10 @@ class AuthServiceTest {
         when(bindingMapper.selectOne(any(LambdaQueryWrapper.class))).thenReturn(null);
         when(gitLabApi.findUsers("wechat_dup_openid"))
             .thenReturn(List.of(new GitLabUserResponse(77L, "wechat_dup_openid", "dup@wechat.mock")));
-        doAnswer(inv -> { inserted.add(inv.getArgument(0)); return 1; })
-            .when(bindingMapper).insert(any(WechatGitlabBinding.class));
+        doAnswer(inv -> {
+            inserted.add(inv.getArgument(0));
+            return 1;
+        }).when(bindingMapper).insert(any(WechatGitlabBinding.class));
 
         authService.login("dup_openid");
 
