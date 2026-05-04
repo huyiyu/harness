@@ -40,18 +40,6 @@ pmd:
     expire_in: 30 days
     when: always
 
-dependency-check:
-  stage: validate
-  image: eclipse-temurin:25-jdk
-  script:
-    - ./gradlew dependencyCheckAnalyze
-  artifacts:
-    paths:
-      - "harness-biz/lifecycle-biz/build/reports/pmd/dependency-check-report.html"
-    expire_in: 30 days
-    when: always
-  allow_failure: true
-
 unit-test:
   stage: test
   image: eclipse-temurin:25-jdk

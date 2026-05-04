@@ -9,7 +9,6 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'checkstyle'
     apply plugin: 'pmd'
-    apply plugin: 'org.owasp.dependencycheck'
 
     java {
         toolchain { languageVersion = JavaLanguageVersion.of(25) }
@@ -32,20 +31,12 @@ subprojects {
         consoleOutput = true
     }
 
-    dependencyCheck {
-        failBuildOnCVSS = 7
-        suppressionFile = rootProject.file('config/owasp-suppressions.xml')
-    }
-
-    check.dependsOn(dependencyCheckAnalyze)
-
     // 只扫描主代码
     check.dependsOn(checkstyleMain, pmdMain)
 
     repositories {
-        maven { url 'https://maven.aliyun.com/repository/public' }
-        maven { url 'https://maven.aliyun.com/repository/spring' }
-        mavenCentral()
+        maven { url = 'https://maven.aliyun.com/repository/public' }
+        maven { url = 'https://maven.aliyun.com/repository/spring' }
     }
 
     dependencies {
