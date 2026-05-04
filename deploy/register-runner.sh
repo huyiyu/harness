@@ -32,6 +32,7 @@ docker exec gitlab-runner gitlab-runner register \
   --token "${RUNNER_TOKEN}" \
   --executor docker \
   --docker-image alpine:latest \
+  --docker-network-mode "devops" \
   --description "local-docker-runner" \
   --docker-volumes /var/run/docker.sock:/var/run/docker.sock
 
