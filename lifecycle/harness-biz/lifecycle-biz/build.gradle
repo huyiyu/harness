@@ -33,7 +33,7 @@ jib {
     allowInsecureRegistries = true
 
     from {
-        image = 'eclipse-temurin:25-jre'
+        image = 'registry.harness.ai/eclipse-temurin:25-jre'
         platforms {
             platform {
                 architecture = "amd64"
@@ -56,5 +56,16 @@ jib {
     container {
         ports = ['8081']
         jvmFlags = ['-Xms256m', '-Xmx512m']
+    }
+
+    extraDirectories {
+        permissions = [:]
+    }
+}
+
+tasks.named('jib') {
+    doFirst {
+        System.setProperty('sendCredentialsOverHttp', 'true')
+        System.setProperty('jib.allowInsecureRegistries', 'true')
     }
 }
