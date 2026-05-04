@@ -46,7 +46,7 @@ lifecycle/gradlew
 
 **核心变更：添加全局 before_script**
 
-在 `.gitlab-ci.yml` 文件顶部（`variables` 之前）添加：
+在 `.gitlab-ci.yml` 文件顶部（`stages` 之前）添加：
 
 ```yaml
 before_script:
