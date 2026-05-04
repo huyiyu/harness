@@ -22,10 +22,10 @@ checkstyle:
   stage: validate
   image: eclipse-temurin:25-jdk
   script:
-    - ./gradlew checkstyleMain checkstyleTest
+    - ./gradlew checkstyleMain checkstyleTest -s
   artifacts:
     paths:
-      - "**/build/reports/checkstyle/"
+      - "harness-biz/lifecycle-biz/build/reports/checkstyle/"
     expire_in: 30 days
     when: always
 
@@ -33,10 +33,10 @@ pmd:
   stage: validate
   image: eclipse-temurin:25-jdk
   script:
-    - ./gradlew pmdMain pmdTest
+    - ./gradlew pmdMain pmdTest -s
   artifacts:
     paths:
-      - "**/build/reports/pmd/"
+      - "harness-biz/lifecycle-biz/build/reports/pmd/"
     expire_in: 30 days
     when: always
 
@@ -47,7 +47,7 @@ dependency-check:
     - ./gradlew dependencyCheckAnalyze
   artifacts:
     paths:
-      - "**/build/reports/dependency-check-report.html"
+      - "harness-biz/lifecycle-biz/build/reports/pmd/dependency-check-report.html"
     expire_in: 30 days
     when: always
   allow_failure: true
@@ -70,7 +70,7 @@ jib-build:
   stage: build
   image: eclipse-temurin:25-jdk
   script:
-    - ./gradlew :harness-biz:lifecycle-biz:jib -PregistryUrl=$REGISTRY_URL -PregistryUsername=$REGISTRY_USERNAME -PregistryPassword=$REGISTRY_PASSWORD
+    - ./gradlew :harness-biz:lifecycle-biz:jib -PregistryUrl=$registryUrl -PregistryUsername=$registryUsername -PregistryPassword=$registryPassword
   only:
     - main
     - tags
