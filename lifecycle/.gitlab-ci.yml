@@ -1,0 +1,16 @@
+stages:
+  - validate
+  - test
+  - build
+
+variables:
+  GIT_STRATEGY: fetch
+  GIT_DEPTH: 10
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - .gradle/wrapper
+    - .gradle/caches
+    - .gradle/dependency-check-data
