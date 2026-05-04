@@ -30,8 +30,10 @@ tasks.named('test') {
 }
 
 jib {
+    allowInsecureRegistries = true
+
     from {
-        image = 'eclipse-temurin:25-jre'
+        image = 'registry.harness.ai/eclipse-temurin:25-jre'
         platforms {
             platform {
                 architecture = "amd64"
@@ -39,13 +41,31 @@ jib {
             }
         }
     }
-    to { image = 'registry.harness.com/lifecycle-biz:latest' }
+
+    to {
+        image = "${project.findProperty('registryUrl')}/lifecycle-biz"
+        tags = ['latest', providers.exec {
+            commandLine 'git', 'rev-parse', '--short', 'HEAD'
+        }.standardOutput.asText.get().trim()]
+        auth {
+            username = project.findProperty('registryUsername')
+            password = project.findProperty('registryPassword')
+        }
+    }
+
     container {
         ports = ['8081']
         jvmFlags = ['-Xms256m', '-Xmx512m']
     }
-    dockerClient {
-        executable = '/usr/local/bin/docker'
-        environment = ['DOCKER_HOST': "unix://${System.getProperty('user.home')}/.orbstack/run/docker.sock".toString()]
+
+    extraDirectories {
+        permissions = [:]
+    }
+}
+
+tasks.named('jib') {
+    doFirst {
+        System.setProperty('sendCredentialsOverHttp', 'true')
+        System.setProperty('jib.allowInsecureRegistries', 'true')
     }
 }

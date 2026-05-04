@@ -1,0 +1,75 @@
+stages:
+  - validate
+  - test
+  - build
+
+variables:
+  GIT_STRATEGY: fetch
+  GIT_DEPTH: 10
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - .gradle/wrapper
+    - .gradle/caches
+    - .gradle/dependency-check-data
+
+checkstyle:
+  stage: validate
+  image: eclipse-temurin:25-jdk
+  script:
+    - ./gradlew checkstyleMain checkstyleTest
+  artifacts:
+    paths:
+      - build/reports/checkstyle/
+    expire_in: 30 days
+    when: always
+
+pmd:
+  stage: validate
+  image: eclipse-temurin:25-jdk
+  script:
+    - ./gradlew pmdMain pmdTest
+  artifacts:
+    paths:
+      - build/reports/pmd/
+    expire_in: 30 days
+    when: always
+
+dependency-check:
+  stage: validate
+  image: eclipse-temurin:25-jdk
+  script:
+    - ./gradlew dependencyCheckAnalyze
+  artifacts:
+    paths:
+      - build/reports/dependency-check-report.html
+    expire_in: 30 days
+    when: always
+  allow_failure: true
+
+unit-test:
+  stage: test
+  image: eclipse-temurin:25-jdk
+  script:
+    - ./gradlew test
+  artifacts:
+    reports:
+      junit: build/test-results/test/*.xml
+    paths:
+      - build/reports/tests/test/
+      - build/test-results/test/
+    expire_in: 30 days
+    when: always
+
+jib-build:
+  stage: build
+  image: eclipse-temurin:25-jdk
+  script:
+    - ./gradlew :harness-biz:lifecycle-biz:jib -PregistryUrl=$REGISTRY_URL -PregistryUsername=$REGISTRY_USERNAME -PregistryPassword=$REGISTRY_PASSWORD
+  only:
+    - main
+    - tags
+  except:
+    - merge_requests
