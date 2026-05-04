@@ -62,3 +62,14 @@ unit-test:
       - build/test-results/test/
     expire_in: 30 days
     when: always
+
+jib-build:
+  stage: build
+  image: eclipse-temurin:25-jdk
+  script:
+    - ./gradlew :harness-biz:lifecycle-biz:jib -PregistryUrl=$REGISTRY_URL -PregistryUsername=$REGISTRY_USERNAME -PregistryPassword=$REGISTRY_PASSWORD
+  only:
+    - main
+    - tags
+  except:
+    - merge_requests
