@@ -48,6 +48,7 @@ pwgen -s 32 1
 ```bash
 htpasswd -Bbn admin <生成的密码> > deploy/registry-auth/htpasswd
 ```
+> 注：`<生成的密码>` 是占位符，实施时替换为 pwgen 生成的实际密码
 
 **配置 gradle.properties**：
 在 `lifecycle/gradle.properties` 中添加：
@@ -56,6 +57,7 @@ registryUrl=registry.harness.ai
 registryUsername=admin
 registryPassword=<生成的32位密码>
 ```
+> 注：`<生成的32位密码>` 是占位符，实施时替换为实际生成的密码
 
 ### 2. Jib 配置修改
 
@@ -75,7 +77,9 @@ jib {
     
     to {
         image = "${project.findProperty('registryUrl')}/lifecycle-biz"
-        tags = ['latest', 'git rev-parse --short HEAD'.execute().text.trim()]
+        tags = ['latest', providers.exec {
+            commandLine 'git', 'rev-parse', '--short', 'HEAD'
+        }.standardOutput.asText.get().trim()]
         auth {
             username = project.findProperty('registryUsername')
             password = project.findProperty('registryPassword')
@@ -132,8 +136,9 @@ cd lifecycle
 
 **验证镜像推送成功**：
 ```bash
-curl -u admin:<password> https://registry.harness.ai/v2/lifecycle-biz/tags/list
+curl -u admin:<password> http://registry.harness.ai/v2/lifecycle-biz/tags/list
 ```
+> 注：本地 registry 使用 http 协议。`<password>` 是占位符，替换为实际密码
 
 **验证双标签存在**：
 返回的 JSON 应包含 `latest` 和对应的 git hash。
