@@ -48,9 +48,7 @@ jib {
 
     to {
         image = "${project.findProperty('registryUrl') ?: 'registry.harness.ai'}/lifecycle-biz"
-        tags = ['latest', providers.exec {
-            commandLine 'git', 'rev-parse', '--short', 'HEAD'
-        }.standardOutput.asText.get().trim()]
+        tags = ['latest', System.getenv('CI_COMMIT_SHORT_SHA') ?: 'dev']
         auth {
             username = project.findProperty('registryUsername') ?: ''
             password = project.findProperty('registryPassword') ?: ''
