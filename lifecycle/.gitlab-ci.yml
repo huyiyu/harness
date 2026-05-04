@@ -48,3 +48,17 @@ dependency-check:
     expire_in: 30 days
     when: always
   allow_failure: true
+
+unit-test:
+  stage: test
+  image: eclipse-temurin:25-jdk
+  script:
+    - ./gradlew test
+  artifacts:
+    reports:
+      junit: build/test-results/test/*.xml
+    paths:
+      - build/reports/tests/test/
+      - build/test-results/test/
+    expire_in: 30 days
+    when: always
