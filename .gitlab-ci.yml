@@ -10,19 +10,19 @@ variables:
   GIT_STRATEGY: fetch
   GIT_DEPTH: 10
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+  GRADLE_USER_HOME: "${CI_PROJECT_DIR}/lifecycle/Gcache"
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
-    - .gradle/wrapper
-    - .gradle/caches
-    - .gradle/dependency-check-data
+    - lifecycle/Gcache/wrapper
+    - lifecycle/Gcache/caches
 
 checkstyle:
   stage: validate
-  image: eclipse-temurin:25-jdk
+  image: registry.harness.ai/eclipse-temurin:25-jdk
   script:
-    - ./gradlew checkstyleMain checkstyleTest -s
+    - ./gradlew checkstyleMain checkstyleTest
   artifacts:
     paths:
       - "harness-biz/lifecycle-biz/build/reports/checkstyle/"
@@ -31,9 +31,9 @@ checkstyle:
 
 pmd:
   stage: validate
-  image: eclipse-temurin:25-jdk
+  image: registry.harness.ai/eclipse-temurin:25-jdk
   script:
-    - ./gradlew pmdMain pmdTest -s
+    - ./gradlew pmdMain pmdTest
   artifacts:
     paths:
       - "harness-biz/lifecycle-biz/build/reports/pmd/"
@@ -42,7 +42,7 @@ pmd:
 
 unit-test:
   stage: test
-  image: eclipse-temurin:25-jdk
+  image: registry.harness.ai/eclipse-temurin:25-jdk
   script:
     - ./gradlew test
   artifacts:
@@ -56,7 +56,7 @@ unit-test:
 
 jib-build:
   stage: build
-  image: eclipse-temurin:25-jdk
+  image: registry.harness.ai/eclipse-temurin:25-jdk
   script:
     - ./gradlew :harness-biz:lifecycle-biz:jib -PregistryUrl=$registryUrl -PregistryUsername=$registryUsername -PregistryPassword=$registryPassword
   only:
